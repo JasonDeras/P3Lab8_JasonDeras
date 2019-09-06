@@ -15,6 +15,9 @@ void MenuAgregar();
 void AgregarEmpleado();
 void AgregarDepartamento();
 
+//Eliminar
+void Eliminar();
+
 //Variables de control
 sqlite3 *conn;
 sqlite3_stmt *res;
@@ -51,6 +54,10 @@ int main(int argc, char** argv) {
 			
 			case 2:
 				MenuAgregar();
+			break;
+			
+			case 3:
+				Eliminar();
 			break;
 			
 			case 7:
@@ -111,7 +118,7 @@ void Empleados(){
 			cout<<"Numero del empleado: "<<sqlite3_column_text(res,0)<<endl;
 			cout<<"Nombre del empleado: "<<sqlite3_column_text(res,1)<<endl;
 			cout<<"Trabajo de empleado: "<<sqlite3_column_text(res,3)<<endl;
-			cout<<"Manager del empleado: "<<sqlite3_column_text(res,4)<<endl;
+			cout<<"Mgr del empleado: "<<sqlite3_column_text(res,4)<<endl;
 			cout<<"Fecha de contratacion: "<<sqlite3_column_text(res,5)<<endl;
 			cout<<"Comimision del empleado: "<<sqlite3_column_text(res,6)<<endl;
 			cout<<"Departamento del empleado: "<<sqlite3_column_text(res,7);
@@ -120,7 +127,7 @@ void Empleados(){
 	
 	cout<<"\n\n\n\n";	
 	sqlite3_close(conn);
-	
+	system("pause");
 }//Fin del metodo para listar empleados
 
 void Departamentos(){
@@ -138,7 +145,7 @@ void Departamentos(){
 	
 	cout<<"\n\n\n\n";	
 	sqlite3_close(conn);
-	
+	sysetm("pause");
 }//Fin del metodo para listar de departamentos
 
 void MenuAgregar(){
@@ -268,4 +275,33 @@ void AgregarDepartamento(){
 	
 }//Fin del metodo para agregar de departamentos
 
-
+void Eliminar(){
+	
+	//Connection con la base
+	error=sqlite3_open("oracle-sample.db",&conn);
+	
+	//Variable de eliminar
+	string num_emp;
+	
+	//Variable del query
+	string insert;
+	
+	cout<<"Ingrese el numero de empleado a eliminar: ";
+	cin>>num_emp;
+	
+	insert="delete from emp where empno= '"+num_emp+"'";
+	
+	if(error!=SQLITE_OK){
+		cout<<"Error con el query";
+		cout<<"\n\n\n\n";
+		return ;
+	}//If que valida si funciono el query
+	
+	error=sqlite3_exec(conn,insert.c_str(),0,0,0);
+	
+	sqlite3_close(conn);
+	
+	cout<<"\n\n\n\n";
+	
+	
+}//Fin del metodo para eliminar
