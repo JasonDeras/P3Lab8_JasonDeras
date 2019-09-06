@@ -165,6 +165,7 @@ void Departamentos(){
 			cout<<"Nombre del Departamento: "<<sqlite3_column_text(res,1)<<endl;
 			cout<<"Localizacion: "<<sqlite3_column_text(res,2);
 			cout<<"\n\n\n\n";
+			
 	}//Fin del while de impresion
 	
 	cout<<"\n\n\n\n";
@@ -468,4 +469,54 @@ void salario(){
 }//Fin del metodo para actualizar el salario del empleado 
 
 void emp_dept(){
+	
+	//Connection con la base
+	error=sqlite3_open("oracle-sample.db",&conn);
+	
+	cout<<"Listado de emplados por departamento"<<endl;
+		
+	error=sqlite3_prepare_v2(conn, "select dept.deptno,dept.dname from dept",1000,&res,&tail);
+				
+	while(sqlite3_step(res) == SQLITE_ROW){
+		cout<<sqlite3_column_text(res,0)<<", "<<sqlite3_column_text(res,1)<<endl;
+	}//While de impresion
+	
+	cout<<"\n\n\n\n";
+	
+	string num_dept;
+	
+	cout<<"Numero del departamento a listar: ";
+	cin>>num_dept;
+	
+	string insert="select * from dept where deptno='"+num_dept+"'";
+	
+	error=sqlite3_prepare_v2(conn, insert.c_str(),1000,&res,&tail);
+				
+	cout<<"DEPRATAMENTO:"<<endl<<endl;
+	
+	while(sqlite3_step(res) == SQLITE_ROW){
+		cout<<"Numero de Departamento: "<<sqlite3_column_text(res,0)<<endl;
+		cout<<"Nombre del Departamento: "<<sqlite3_column_text(res,1)<<endl;
+		cout<<"Localizacion: "<<sqlite3_column_text(res,2);
+		cout<<"\n\n\n\n";
+	}//While de impresion del departamento
+	
+	
+	insert="select * from emp where deptno='"+num_dept+"'";
+	
+	error=sqlite3_prepare_v2(conn, insert.c_str(),1000,&res,&tail);
+	
+	cout<<"EMPLEADOS:"<<endl<<endl;
+	
+	while(sqlite3_step(res) == SQLITE_ROW){
+		cout<<setw(10)<<"Empno: "<<sqlite3_column_text(res,0)<<endl<<setw(10)<<"Ename: "<<sqlite3_column_text(res,1)<<endl<<setw(10)<<"Job: "<<sqlite3_column_text(res,2)<<endl<<setw(10)<<"Mgr: "<<sqlite3_column_text(res,3)<<endl<<setw(10)<<"Hiredate: "<<sqlite3_column_text(res,4)<<endl<<setw(10)<<"Sal: "<<sqlite3_column_text(res,5)<<endl<<setw(10)<<"Comm: "<<sqlite3_column_text(res,6)<<endl<<setw(10)<<"Deptno: "<<sqlite3_column_text(res,7)<<endl<<endl;
+	}//While de impresion de los empleados
+	
+	if (error!= SQLITE_OK){
+		cout<<"Ocurrio un error al listar los empleados"<<endl;
+		return;
+	}
+	
+	sqlite3_close(conn);
+	cout<<"\n\n\n\n";
 }//Fin del metodo para listar los empleados del departamento
