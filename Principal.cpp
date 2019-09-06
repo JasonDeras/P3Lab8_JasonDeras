@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <sqlite3.h>
 #include <string.h>
+#include <bits/stdc++.h>
 
 using namespace std;
 
@@ -402,8 +403,69 @@ void Jefes(){
 }//Fin del metodo para listar los jefes con sus empleados
 
 void salario(){
-}
 
-//Listar los empleados del departamento
+	int actual;
+	int c=0;
+	int nuevo=0;
+	
+	//Connection con la base
+	
+	error=sqlite3_open("oracle-sample.db",&conn);
+	
+	cout<<"Actualizar el jefe"<<endl;
+	error=sqlite3_prepare_v2(conn, "select emp.empno,emp.ename from emp",1000,&res,&tail);
+	
+	while(sqlite3_step(res) == SQLITE_ROW){
+					cout<<sqlite3_column_text(res,0)<<", "<<sqlite3_column_text(res,1)<<endl;
+	}//While de impresion
+	
+	cout<<"\n\n\n\n";
+	
+	string num_emp;
+	
+	cout<<"Numero del empleado a actualizar: ";
+	cin>>num_emp;
+	
+	string insert="select emp.sal from emp where empno='"+num_emp+"'";
+	error=sqlite3_prepare_v2(conn, insert.c_str(),1000,&res,&tail);
+				
+	while(sqlite3_step(res) == SQLITE_ROW){
+		actual=atoi(reinterpret_cast<const char *>(sqlite3_column_text(res,0)));
+		cout<<"Salrio actual: "<<actual;
+	}//Impresion del salario actual
+	
+	insert="select emp.sal from emp where mgr='"+num_emp+"'";
+	error=sqlite3_prepare_v2(conn, insert.c_str(),1000,&res,&tail);
+				
+	while(sqlite3_step(res) == SQLITE_ROW){
+		nuevo=nuevo+atoi(reinterpret_cast<const char *>(sqlite3_column_text(res,0)));
+		c++;
+	}//While de la conversion
+	
+	if (c==0){
+		nuevo=actual;
+	}else{
+		nuevo=(nuevo/c)*2;
+	}//Fin del if de la acualizacion
+	
+	stringstream ss;
+	ss << nuevo;
+	string temp = ss.str();
+				
+	cout<<"Salario nuevo: "<<temp<<endl;
+	insert="update emp set sal='"+temp+"' where empno='"+num_emp+"'";
+	
+	error=sqlite3_exec(conn, insert.c_str(),0,0,0);
+	
+	if (error!= SQLITE_OK){
+		cout<<"Ocurrio un error en actialozar"<<endl;
+	}
+				
+	cout<<"Salario actualizado"<<endl;
+	sqlite3_close(conn);
+	cout<<"\n\n\n\n";
+	
+}//Fin del metodo para actualizar el salario del empleado 
+
 void emp_dept(){
-}
+}//Fin del metodo para listar los empleados del departamento
