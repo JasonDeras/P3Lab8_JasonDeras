@@ -219,20 +219,33 @@ void AgregarEmpleado(){
 
 void AgregarDepartamento(){
 	
+	//Connection con la base
 	error=sqlite3_open("oracle-sample.db",&conn);
-	error=sqlite3_prepare_v2(conn,"select * from dept",1000,&res,&tail);
 	
-	while(sqlite3_step(res) == SQLITE_ROW){
-		
-			cout<<"Numero de Departamento: "<<sqlite3_column_text(res,0)<<endl;
-			cout<<"Nombre del Departamento: "<<sqlite3_column_text(res,1)<<endl;
-			cout<<"Localizacion: "<<sqlite3_column_text(res,2);
-			cout<<"\n\n\n\n";
-	}//Fin del while de impresion
+	//Variables para agregar empleados
+	string num_dept;
+	string nom_dept;
+	string localizacion;
 	
-	cout<<"\n\n\n\n";	
+	//Inserta en la tabla
+	string insert;
+	
+	cout<<"Ingrese numero del departamento: ";
+	cin>>num_dept;
+	
+	cout<<"Ingrese nombre del departamento: ";
+	cin>>nom_dept;
+	
+	cout<<"Ingrese localizacion: ";
+	cin>>localizacion;
+	
+	insert="insert into dept values('"+num_dept+"','"+nom_dept+"','"+localizacion+"')";
+	
+	error=sqlite3_exec(conn,insert.c_str(),0,0,0);
+	
 	sqlite3_close(conn);
+	cout<<"\n\n\n\n";
 	
-}//Fin del metodo para listar de departamentos
+}//Fin del metodo para agregar de departamentos
 
 
