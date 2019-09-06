@@ -196,7 +196,7 @@ void AgregarEmpleado(){
 	cout<<"Ingrese trabajo: ";
 	cin>>trabajo;
 	
-	cout<<"Ingrese manager: ";
+	cout<<"Ingrese mgr: ";
 	cin>>manager;
 	
 	cout<<"Fecha de contratacion: ";
@@ -211,7 +211,21 @@ void AgregarEmpleado(){
 	cout<<"Ingrese numero de departamento: ";
 	cin>>num_dept;
 	
-	error=sqlite3_exec(conn,insert.c_str(),0,0,0);
+	
+	insert = "select * from dept where deptno = '"+num_dept+"'";
+	sqlite3_prepare_v2(conn, insert.c_str(), insert.length()+1, &res,	&tail);
+						
+	if(error!=SQLITE_OK){
+		cout<<"Error con el query";
+		cout<<"\n\n\n\n";
+		return ;
+	}//If que valida si funciono el query
+						
+	if(sqlite3_step(res) == SQLITE_ROW){
+		insert = "insert into emp values('"+num_emp+"','"+nom_emp+"','"+trabajo+"','"+manager+"','"+contratacion+"','"+saldo+"','"+commision+"','"+num_dept+"')";
+		error=sqlite3_exec(conn,insert.c_str(),0,0,0);
+	}//Aregarlo a la tabla
+	
 	sqlite3_close(conn);
 	cout<<"\n\n\n\n";
 	
@@ -240,6 +254,12 @@ void AgregarDepartamento(){
 	cin>>localizacion;
 	
 	insert="insert into dept values('"+num_dept+"','"+nom_dept+"','"+localizacion+"')";
+	
+	if(error!=SQLITE_OK){
+		cout<<"Error con el query";
+		cout<<"\n\n\n\n";
+		return ;
+	}//If que valida si funciono el query
 	
 	error=sqlite3_exec(conn,insert.c_str(),0,0,0);
 	
