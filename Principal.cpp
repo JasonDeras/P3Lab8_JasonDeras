@@ -18,6 +18,15 @@ void AgregarDepartamento();
 //Eliminar
 void Eliminar();
 
+//Litado de emplegos con su jefe{
+void Jefes();
+
+//Void actualizacion del salario
+void salario();
+
+//Listar los empleados del departamento
+void emp_dept();
+
 //Variables de control
 sqlite3 *conn;
 sqlite3_stmt *res;
@@ -25,9 +34,7 @@ int error=0;
 int rec_count =0;
 const char *tail;
 	
-int main(int argc, char** argv) {
-	
-//YYYY-MM-DD	
+int main(int argc, char** argv) {	
 	
 	while(true){
 		
@@ -58,6 +65,18 @@ int main(int argc, char** argv) {
 			
 			case 3:
 				Eliminar();
+			break;
+			
+			case 4:
+				Jefes();
+			break;
+			
+			case 5:
+				salario();
+			break;
+			
+			case 6:
+			 	emp_dept();
 			break;
 			
 			case 7:
@@ -115,19 +134,23 @@ void Empleados(){
 	
 	while(sqlite3_step(res) == SQLITE_ROW){
 		
-			cout<<"Numero del empleado: "<<sqlite3_column_text(res,0)<<endl;
-			cout<<"Nombre del empleado: "<<sqlite3_column_text(res,1)<<endl;
-			cout<<"Trabajo de empleado: "<<sqlite3_column_text(res,3)<<endl;
-			cout<<"Mgr del empleado: "<<sqlite3_column_text(res,4)<<endl;
-			cout<<"Fecha de contratacion: "<<sqlite3_column_text(res,5)<<endl;
-			cout<<"Comimision del empleado: "<<sqlite3_column_text(res,6)<<endl;
-			cout<<"Departamento del empleado: "<<sqlite3_column_text(res,7);
-			cout<<"\n\n\n\n";
+		cout<<"Numero del empleado: "<<sqlite3_column_text(res,0)<<endl;
+		cout<<"Nombre del empleado: "<<sqlite3_column_text(res,1)<<endl;
+		cout<<"Trabajo de empleado: "<<sqlite3_column_text(res,3)<<endl;
+		cout<<"Mgr del empleado: "<<sqlite3_column_text(res,4)<<endl;
+		cout<<"Fecha de contratacion: "<<sqlite3_column_text(res,5)<<endl;
+		cout<<"Comimision del empleado: "<<sqlite3_column_text(res,6)<<endl;
+		cout<<"Departamento del empleado: "<<sqlite3_column_text(res,7);
+		cout<<"\n\n\n\n";
+			
 	}//Fin del while de impresion
 	
-	cout<<"\n\n\n\n";	
+	cout<<"\n\n\n\n";
+		
 	sqlite3_close(conn);
+	
 	system("pause");
+	
 }//Fin del metodo para listar empleados
 
 void Departamentos(){
@@ -143,9 +166,12 @@ void Departamentos(){
 			cout<<"\n\n\n\n";
 	}//Fin del while de impresion
 	
-	cout<<"\n\n\n\n";	
+	cout<<"\n\n\n\n";
+		
 	sqlite3_close(conn);
-	sysetm("pause");
+	
+	system("pause");
+	
 }//Fin del metodo para listar de departamentos
 
 void MenuAgregar(){
@@ -284,12 +310,12 @@ void Eliminar(){
 	string num_emp;
 	
 	//Variable del query
-	string insert;
+	string deleted;
 	
 	cout<<"Ingrese el numero de empleado a eliminar: ";
 	cin>>num_emp;
 	
-	insert="delete from emp where empno= '"+num_emp+"'";
+	deleted="delete from emp where empno= '"+num_emp+"'";
 	
 	if(error!=SQLITE_OK){
 		cout<<"Error con el query";
@@ -297,11 +323,87 @@ void Eliminar(){
 		return ;
 	}//If que valida si funciono el query
 	
-	error=sqlite3_exec(conn,insert.c_str(),0,0,0);
+	error=sqlite3_exec(conn,deleted.c_str(),0,0,0);
 	
 	sqlite3_close(conn);
 	
 	cout<<"\n\n\n\n";
 	
-	
 }//Fin del metodo para eliminar
+
+void Jefes(){
+	
+	//Connection con la base
+	error=sqlite3_open("oracle-sample.db",&conn);
+	
+	cout<<"Litar Jefe\n\n\n\n";
+	
+	error=sqlite3_prepare_v2(conn, "select emp.empno,emp.ename from emp",1000,&res,&tail);
+	
+	while(sqlite3_step(res) == SQLITE_ROW){
+		cout<<sqlite3_column_text(res,0)<<", "<<sqlite3_column_text(res,1)<<endl;
+	}//While de impresion
+	
+	cout<<"\n\n\n\n";
+	
+	//Variable del numero a buscar
+	string num_emp;
+	
+	cout<<"Numero del empleado a listar del empleado a listar: ";
+	cin>>num_emp;
+	
+	string buscar="select * from emp where empno='"+num_emp+"'";
+	
+	error=sqlite3_prepare_v2(conn, buscar.c_str(),1000,&res,&tail);
+	
+	cout<<"JEFE:"<<endl<<endl;
+	
+	while(sqlite3_step(res) == SQLITE_ROW){
+		
+		cout<<"Numero del empleado: "<<sqlite3_column_text(res,0)<<endl;
+		cout<<"Nombre del empleado: "<<sqlite3_column_text(res,1)<<endl;
+		cout<<"Trabajo de empleado: "<<sqlite3_column_text(res,3)<<endl;
+		cout<<"Mgr del empleado: "<<sqlite3_column_text(res,4)<<endl;
+		cout<<"Fecha de contratacion: "<<sqlite3_column_text(res,5)<<endl;
+		cout<<"Comimision del empleado: "<<sqlite3_column_text(res,6)<<endl;
+		cout<<"Departamento del empleado: "<<sqlite3_column_text(res,7);
+		cout<<"\n\n\n\n";
+		
+	}//While de impresion del jefe
+	
+	
+	buscar="select * from emp where mgr='"+num_emp+"'";
+	
+	error=sqlite3_prepare_v2(conn, buscar.c_str(),1000,&res,&tail);
+	
+	cout<<"EMPLEADOS:"<<endl<<endl;
+	
+	while(sqlite3_step(res) == SQLITE_ROW){
+		
+		cout<<"Numero del empleado: "<<sqlite3_column_text(res,0)<<endl;
+		cout<<"Nombre del empleado: "<<sqlite3_column_text(res,1)<<endl;
+		cout<<"Trabajo de empleado: "<<sqlite3_column_text(res,3)<<endl;
+		cout<<"Mgr del empleado: "<<sqlite3_column_text(res,4)<<endl;
+		cout<<"Fecha de contratacion: "<<sqlite3_column_text(res,5)<<endl;
+		cout<<"Comimision del empleado: "<<sqlite3_column_text(res,6)<<endl;
+		cout<<"Departamento del empleado: "<<sqlite3_column_text(res,7);
+		cout<<"\n\n\n\n";
+		
+	}//Impresion de los empleados
+				
+	if (error!= SQLITE_OK){
+		cout<<"Ocurrio un error en el listado\n\n\n\n";
+		return ;
+	}//If que valida el query
+				
+	sqlite3_close(conn);
+	cout<<"\n\n\n\n";
+	
+}//Fin del metodo para listar los jefes con sus empleados
+
+void salario(){
+}
+
+//Listar los empleados del departamento
+void emp_dept(){
+}
