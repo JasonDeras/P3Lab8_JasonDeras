@@ -509,7 +509,16 @@ void emp_dept(){
 	cout<<"EMPLEADOS:"<<endl<<endl;
 	
 	while(sqlite3_step(res) == SQLITE_ROW){
-		cout<<setw(10)<<"Empno: "<<sqlite3_column_text(res,0)<<endl<<setw(10)<<"Ename: "<<sqlite3_column_text(res,1)<<endl<<setw(10)<<"Job: "<<sqlite3_column_text(res,2)<<endl<<setw(10)<<"Mgr: "<<sqlite3_column_text(res,3)<<endl<<setw(10)<<"Hiredate: "<<sqlite3_column_text(res,4)<<endl<<setw(10)<<"Sal: "<<sqlite3_column_text(res,5)<<endl<<setw(10)<<"Comm: "<<sqlite3_column_text(res,6)<<endl<<setw(10)<<"Deptno: "<<sqlite3_column_text(res,7)<<endl<<endl;
+		
+		cout<<"Numero del empleado: "<<sqlite3_column_text(res,0)<<endl;
+		cout<<"Nombre del empleado: "<<sqlite3_column_text(res,1)<<endl;
+		cout<<"Trabajo de empleado: "<<sqlite3_column_text(res,3)<<endl;
+		cout<<"Mgr del empleado: "<<sqlite3_column_text(res,4)<<endl;
+		cout<<"Fecha de contratacion: "<<sqlite3_column_text(res,5)<<endl;
+		cout<<"Comimision del empleado: "<<sqlite3_column_text(res,6)<<endl;
+		cout<<"Departamento del empleado: "<<sqlite3_column_text(res,7);
+		cout<<"\n\n\n\n";
+		
 	}//While de impresion de los empleados
 	
 	if (error!= SQLITE_OK){
